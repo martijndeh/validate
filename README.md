@@ -1,6 +1,6 @@
 # Validate
 [![Build Status](https://travis-ci.org/martijndeh/validate.svg?branch=master)](https://travis-ci.org/martijndeh/validate)
-[![Coverage Status](https://coveralls.io/repos/martijndeh/validate/badge.svg?branch=master&service=github)](https://coveralls.io/github/martijndeh/validate?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/martijndeh/validate/badge.svg?branch=master)](https://coveralls.io/github/martijndeh/validate?branch=master)
 
 A lightweight express middleware to easily validate user input in requests.
 
