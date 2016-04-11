@@ -14,7 +14,7 @@ const validationRules = {
 			'Invalid email, yo!': email && email.indexOf('@') !== -1,
 		}),
 		password: (password) => ({
-			'No password.': password,
+			'No password provided.': password,
 			'Eeks, your password is not long enough.': password && password.length > 6,
 		}),
 	},
@@ -25,13 +25,17 @@ app.post('/api/users', validateMiddleware(validationRules), (request, response) 
 });
 
 app.use((error, request, response, next) => {
-	// The error middleware should handle the response.
+	// The error middleware should handle the response. `error` contains
+	// an array of messages with a field, value and message. Field is the
+	// property's field name e.g. `body.email` or `body.password`. Value
+	// is the original value which was invalidated. Message is the error
+	// message from the validation rule.
 });
 ```
 
 ## Validation Rules
 
-To validate requests, you need to pass validation rules to the `validate` middleware. The rules per property are a validator function. A validator function returns an object with one or more error messages as keys and the validation as value where true if valid and false invalid.
+To validate requests, you need to pass validation rules to the `validate` middleware. The rules per property are a validator function. A validator function returns an object with one or more error messages as keys and the validation as value where `true` is valid and `false` invalid.
 
 For example, the following creates a rule on `body.email` which validates if the email exists and if it's valid (valid as in an @ exists):
 
@@ -39,7 +43,10 @@ For example, the following creates a rule on `body.email` which validates if the
 const validationRules = {
 	// The scope of the validation rule is request.body.
 	body: {
-		// We want to validate the email property on the body. We create a validator function which returns an object with multiple error messages and the validation result as value (where true is valid and false is invalid).
+		// We want to validate the email property on the body. We
+		// create a validator function which returns an object with
+		// multiple error messages and the validation result as
+		// value (where true is valid and false is invalid).
 		email: (email) => ({
 			// Check if the email exists.
 			'Please provide your email.': email,
@@ -79,7 +86,7 @@ You can validate more than the `request.body`. To validate `request.query` simpl
 const validationRules = {
 	query: {
 		text: (text) => ({
-			'Please enter the text.': text,
+			'Please enter the text.': !!text,
 			'Please make sure the text is longer than 200 characters.': text.length > 200,
 		}),
 	},
@@ -96,7 +103,7 @@ const validationRules = {
 		value: (value) => ({
 			'Value must be bigger than 42.': value > 42,
 		}),
-		otherValue: (math, body, request) => ({
+		otherValue: (otherValue, body, request) => ({
 			'The other value should be smaller than value.': otherValue < body.value,
 		}),
 	},
@@ -105,10 +112,10 @@ const validationRules = {
 
 ## Validate
 
-You can also use the `validate` function directly without using the middleware. Pass the validation rules to `validate` and it returns an array with one or more error descriptions.
+You can also use the `validate` function directly without using the middleware. Pass the validation rules to `validate` and it returns an array with one or more error messages.
 
 ```js
 import { validate } from 'express-validate-system';
 
-const errors = validate(validationRules);
+const errorMessages = validate(validationRules);
 ```
