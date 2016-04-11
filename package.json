@@ -8,6 +8,7 @@
     "build": "babel src -d lib",
     "coverage": "istanbul cover _mocha -- --compilers js:babel-register --recursive ./src/**/*.test.js",
     "test": "NODE_ENV=test mocha --compilers js:babel-register --reporter spec ./src/**/*.test.js",
+	"test:watch": "npm run test -- --watch",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
