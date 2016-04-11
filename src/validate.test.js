@@ -339,4 +339,19 @@ describe('validate', () => {
 			validate(request, validationRules);
 		}, Error);
 	});
+
+	it('should validate on root', () => {
+		const request = {
+			name: 'Martijn',
+		};
+
+		const validationRules = {
+			name:  (name) => ({
+				'The name is wrong.': name === 'Martijn',
+			}),
+		};
+
+		const errors = validate(request, validationRules);
+		assert.equal(errors.length, 0);
+	});
 });

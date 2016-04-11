@@ -52,17 +52,6 @@ export default function validate(root, validationRules) {
 		});
 	};
 
-	Object.keys(validationRules)
-		.forEach((key) => {
-			// Key is body or query. So this is e.g. request.body.
-			const targetObject = root[key] || {};
-
-			// This is an object with keys and validatorFunctions.
-			const checks = validationRules[key];
-
-			// And we validate!
-			$validate(targetObject, [root], [key], checks);
-		});
-
-	return errors;
+	$validate(root, [], [], validationRules);
+	return errorMessages;
 }
