@@ -5,7 +5,7 @@ describe('validate error', () => {
 	const errorsMessages = [{
 		value: 1,
 		field: 'body.value',
-		error: 'This is wrong!',
+		message: 'This is wrong!',
 	}];
 
 	const error = new ValidateError(errorsMessages);

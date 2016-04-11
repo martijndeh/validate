@@ -41,7 +41,7 @@ describe('validate', () => {
 		assert.deepEqual(errors[0], {
 			field: 'body.value',
 			value: 1,
-			error: 'Value must be greater than 42.',
+			message: 'Value must be greater than 42.',
 		});
 	});
 
@@ -92,7 +92,7 @@ describe('validate', () => {
 		assert.deepEqual(errors[0], {
 			field: 'body.address.streetName',
 			value: null,
-			error: 'Please provide your street name.',
+			message: 'Please provide your street name.',
 		});
 	});
 
@@ -180,11 +180,11 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.deepEqual(errors, [{
-			error: 'Value must not be -1!',
+			message: 'Value must not be -1!',
 			field: 'body.value',
 			value: -1,
 		}, {
-			error: 'Name must exist!',
+			message: 'Name must exist!',
 			field: 'body.name',
 			value: null,
 		}]);
@@ -208,7 +208,7 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.deepEqual(errors, [{
-			error: 'Name must exist!',
+			message: 'Name must exist!',
 			field: 'body.name',
 			value: undefined,
 		}]);
@@ -230,7 +230,7 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.deepEqual(errors, [{
-			error: 'Name must exist!',
+			message: 'Name must exist!',
 			field: 'body.name',
 			value: undefined,
 		}]);
@@ -251,7 +251,7 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.deepEqual(errors, [{
-			error: 'No street name!',
+			message: 'No street name!',
 			field: 'body.address.streetName',
 			value: undefined,
 		}]);
@@ -276,7 +276,7 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.deepEqual(errors, [{
-			error: 'No street name!',
+			message: 'No street name!',
 			field: 'body.address.streetName',
 			value: undefined,
 		}]);
