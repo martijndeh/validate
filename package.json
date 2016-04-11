@@ -1,6 +1,6 @@
 {
   "name": "express-validate-system",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A lightweight express middleware to easily validate user input in requests.",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
