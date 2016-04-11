@@ -5,7 +5,7 @@
 A lightweight express middleware to easily validate user input in requests.
 
 ```js
-import validate from 'express-validate-system';
+import validateMiddleware from 'express-validate-system';
 
 const validationRules = {
 	body: {
@@ -20,7 +20,7 @@ const validationRules = {
 	},
 };
 
-app.post('/api/users', validate(validationRules), (request, response) => {
+app.post('/api/users', validateMiddleware(validationRules), (request, response) => {
 	// Create the user here.
 });
 
