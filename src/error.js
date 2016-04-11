@@ -1,8 +1,8 @@
 export default class ValidateError extends Error {
-	constructor(errors) {
+	constructor(errorMessages) {
 		super();
 
 		this.statusCode = 400;
-		this.errors = errors;
+		this.messages = errorMessages;
 	}
 }

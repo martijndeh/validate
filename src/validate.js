@@ -1,5 +1,5 @@
 export default function validate(root, validationRules) {
-	const errors = [];
+	const errorMessages = [];
 
 	const $validate = (targetObject, parents, fields, checks) => {
 		if (!checks || typeof checks !== 'object') {
@@ -32,7 +32,7 @@ export default function validate(root, validationRules) {
 				const validations = validatorFunction(value, targetObject, ...parents);
 
 				if (!validations || typeof validations !== 'object') {
-					throw new Error(`The validator function in '${[...fields, field].join('.')} returns invalid validations. Instead, it should return an object with error messages as keys and validation rules as values (where valid is true and invalid is false).`);
+					throw new Error(`The validator function in '${[...fields, field].join('.')}' returns invalid validations. Instead, it should return an object with error messages as keys and validation rules as values (where valid is true and invalid is false). It returned ${validations}.`);
 				}
 
 				Object.keys(validations).forEach((errorMessage) => {
@@ -41,10 +41,10 @@ export default function validate(root, validationRules) {
 					const result = validations[errorMessage];
 
 					if (!result) {
-						errors.push({
+						errorMessages.push({
 							field: [...fields, field].join('.'),
 							value: value,
-							error: errorMessage,
+							message: errorMessage,
 						});
 					}
 				});
