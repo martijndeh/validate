@@ -17,6 +17,21 @@ export default function validate(root, validationRules) {
 					[property]: checks[check],
 				});
 			}
+			else if (Array.isArray(checks[field])) {
+				const arrayCheck = checks[field];
+
+				if (arrayCheck.length !== 1) {
+					throw new Error(`The checks array ${[...fields, field].join('.')} should contain exactly one validator function.`);
+				}
+
+				const array = targetObject[field];
+
+				if (array && Array.isArray(array)) {
+					array.forEach((object, index) => {
+						$validate(object, [array, targetObject, ...parents], [...fields, field, String(index)], arrayCheck[0]);
+					});
+				}
+			}
 			else if (typeof checks[field] === 'object') {
 				let childObject = {};
 				if (targetObject && typeof targetObject === 'object') {
