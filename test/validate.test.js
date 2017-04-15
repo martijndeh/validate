@@ -1,4 +1,4 @@
-import validate from './validate.js';
+import validate from '../src/validate.js';
 import assert from 'assert';
 
 describe('validate', () => {
@@ -66,6 +66,44 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.equal(errors.length, 0);
+	});
+
+	it('should validate nested value which is not an object', () => {
+		const request = {
+			body: {
+				address: 'test',
+			},
+		};
+
+		const validationRules = {
+			body: {
+				address: {
+					streetName: (value) => ({
+						'Please provider your street name.': value && value.length > 0,
+					}),
+				},
+			},
+		};
+
+		const errors = validate(request, validationRules);
+		assert.equal(errors.length, 1);
+	});
+
+	it('should validate nested value which is not in the root object', () => {
+		const request = 'test';
+
+		const validationRules = {
+			body: {
+				address: {
+					streetName: (value) => ({
+						'Please provider your street name.': value && value.length > 0,
+					}),
+				},
+			},
+		};
+
+		const errors = validate(request, validationRules);
+		assert.equal(errors.length, 1);
 	});
 
 	it('should validate nested value with 1 error', () => {
@@ -353,5 +391,115 @@ describe('validate', () => {
 
 		const errors = validate(request, validationRules);
 		assert.equal(errors.length, 0);
+	});
+
+	it('should validate array of strings', () => {
+		const request = {
+			strings: ['A', 'B', 'C'],
+		};
+
+		const validationRules = {
+			strings: (strings) => ({
+				'Not enough strings.': strings.length === 3,
+			}),
+		};
+
+		const errors = validate(request, validationRules);
+		assert.equal(errors.length, 0);
+	});
+
+	it('should validate length of array', () => {
+		const request = {
+			objects: [
+				{name: 'A'},
+				{name: 'B'},
+				{name: 'C'},
+			],
+		};
+		const validationRules = {
+			'objects.length': (length) => ({
+				'There should be 3 items.': length === 3,
+			}),
+		};
+		const errors = validate(request, validationRules);
+
+		assert.equal(errors.length, 0);
+	});
+
+	it('should validate items of array', () => {
+		const request = {
+			objects: [
+				{name: 'A'},
+				{name: 'B'},
+				{name: 'C'},
+			],
+		};
+
+		const validationRules = {
+			objects: [{
+				name: (name) => ({
+					'There should be a name!': name.length > 0,
+				}),
+			}],
+		};
+
+		const errors = validate(request, validationRules);
+
+		assert.equal(errors.length, 0);
+	});
+
+	it('should invalidate items of array', () => {
+		const request = {
+			objects: [
+				{name: 'A'},
+				{name: 'B'},
+				{name: 'C'},
+			],
+		};
+
+		const validationRules = {
+			objects: [{
+				name: (name) => ({
+					'There should be a name!': name.length > 0,
+				}),
+
+				description: (description) => ({
+					'Should not be empty!': description && description.length > 0,
+				}),
+			}],
+		};
+
+		const errors = validate(request, validationRules);
+
+		assert.equal(errors.length, 3);
+	});
+
+	it('should not check null array', () => {
+		const request = {
+			objects: null,
+		};
+
+		const validationRules = {
+			objects: [{
+				name: (name) => ({
+					'There should be a name!': name.length > 0,
+				}),
+			}],
+		};
+
+		const errors = validate(request, validationRules);
+
+		assert.equal(errors.length, 0);
+	});
+
+	it('should throw invalid number of checks', () => {
+		const request = {};
+		const validationRules = {
+			array: [],
+		};
+
+		assert.throws(() => {
+			validate(request, validationRules);
+		});
 	});
 });

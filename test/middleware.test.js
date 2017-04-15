@@ -1,5 +1,5 @@
 import assert from 'assert';
-import middleware from './middleware.js';
+import middleware from '../src/middleware.js';
 
 describe('middleware', () => {
 	const response = {};
@@ -37,6 +37,21 @@ describe('middleware', () => {
 		middlewareFunction(request, response, (error) => {
 			assert.notEqual(error, null);
 			done();
+		});
+	});
+
+	it('should create custom error', () => {
+		const request = {
+			body: {},
+		};
+
+		const middlewareFunction = middleware(validationRules, (errorMessages) => ({
+			id: 'customError',
+			errorMessages,
+		}));
+
+		middlewareFunction(request, response, (error) => {
+			assert.equal(error.id, 'customError');
 		});
 	});
 });
