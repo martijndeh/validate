@@ -43,5 +43,7 @@
     "middleware",
     "input"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "boom": "^4.3.1"
+  }
 }
