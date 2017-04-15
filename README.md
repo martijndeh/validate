@@ -11,25 +11,21 @@ const validationRules = {
 	body: {
 		email: (email) => ({
 			'Please provide an email.': email,
-			'Invalid email, yo!': email && email.indexOf('@') !== -1,
+			'Invalid email.': email && email.indexOf('@') !== -1,
 		}),
 		password: (password) => ({
 			'No password provided.': password,
-			'Eeks, your password is not long enough.': password && password.length > 6,
+			'Your password is not long enough.': password && password.length > 6,
 		}),
 	},
 };
 
 app.post('/api/users', validateMiddleware(validationRules), (request, response) => {
-	// Create the user here.
+	// TODO: Create the user here. request.body.email and request.body.password are validated based on the rules in validationRules because of the validateMiddleware.
 });
 
 app.use((error, request, response, next) => {
-	// The error middleware should handle the response. `error` contains
-	// an array of messages with a field, value and message. Field is the
-	// property's field name e.g. `body.email` or `body.password`. Value
-	// is the original value which was invalidated. Message is the error
-	// message from the validation rule.
+	// The error middleware should handle the response. `error` is a Boom#badRequest error with an array of errorMessages in it's data property.
 });
 ```
 
@@ -37,11 +33,11 @@ app.use((error, request, response, next) => {
 
 To validate requests, you need to pass validation rules to the `validate` middleware. The rules per property are a validator function. A validator function returns an object with one or more error messages as keys and the validation as value where `true` is valid and `false` invalid.
 
-For example, the following creates a rule on `body.email` which validates if the email exists and if it's valid (valid as in an @ exists):
+For example, the following creates a rule on `body.email` which validates if the email exists and if it's valid (valid as in an @ exists, this is for demonstration purposes only):
 
 ```js
 const validationRules = {
-	// The scope of the validation rule is request.body.
+	// The scope of the validation rule is request.body. You could just as well validate request.query, if you want.
 	body: {
 		// We want to validate the email property on the body. We
 		// create a validator function which returns an object with
@@ -78,20 +74,26 @@ const validationRules = {
 };
 ```
 
-### Query
+### Arrays
 
-You can validate more than the `request.body`. To validate `request.query` simply create the appropriate validation rules:
+You can also validate all items in an array.
 
 ```js
 const validationRules = {
-	query: {
-		text: (text) => ({
-			'Please enter the text.': !!text,
-			'Please make sure the text is longer than 200 characters.': text.length > 200,
+	body: {
+		list: [{
+			name: (name) => ({
+				'Name should be set': name,
+			}),
+		}],
+		'list.length': (length) => ({
+			'There should be 3 items in the list.': length === 3,
 		}),
-	},
-};
+	}
+}
 ```
+
+The will also check the length of the list in request's body. You can use the dot notation to check specific properties.
 
 ### References
 
@@ -108,6 +110,20 @@ const validationRules = {
 		}),
 	},
 };
+```
+
+### Custom errors
+
+Since version 2.0 this library passes Boom errors to the next callback. To create your own errors, pass a callback to the `validateMiddleware` which creates error messages.
+
+```js
+const middleware = validateMiddleware({
+	body: {
+		test: (test) => ({
+			'Test should be set to 123.': test === 123,
+		}),
+	},
+}, (errorMessages) => new Error('This is my custom error.'));
 ```
 
 ## Validate
