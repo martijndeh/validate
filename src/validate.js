@@ -6,8 +6,18 @@ export default function validate(root, validationRules) {
 			throw new Error(`The validation rule in ${fields.join('.')} is invalid.`);
 		}
 
-		Object.keys(checks).forEach((field) => {
-			if (typeof checks[field] === 'object') {
+		Object.keys(checks).forEach((check) => {
+			const [
+				field,
+				property,
+			] = check.split('.');
+
+			if (property) {
+				$validate(targetObject[field], parents, fields, {
+					[property]: checks[check],
+				});
+			}
+			else if (typeof checks[field] === 'object') {
 				let childObject = {};
 				if (targetObject && typeof targetObject === 'object') {
 					const value = targetObject[field];
